@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>台灣路殺動物數據分析 - 期末報告</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background-color: #f7f9fc; padding: 40px; color: #333; line-height: 1.8; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        
+        .header { text-align: center; margin-bottom: 50px; border-bottom: 3px solid #007aff; padding-bottom: 30px; }
+        .top-subtitle { color: #666; font-size: 1.1em; letter-spacing: 1px; margin-bottom: 10px; }
+        .main-title { font-size: 2.8em; color: #1a1a1a; margin: 10px 0; font-weight: bold; }
+        .source-info { color: #007aff; font-size: 1em; font-weight: 500; }
+
+        h2 { color: #2c3e50; margin-top: 50px; border-left: 6px solid #007aff; padding-left: 15px; margin-bottom: 25px; }
+        
+        /* 儀表板卡片 */
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
+        .stat-card { background: #fff; border: 1px solid #e0e6ed; padding: 25px; border-radius: 15px; text-align: center; }
+        .stat-card h4 { margin: 0; color: #7f8c8d; font-size: 1em; }
+        .stat-card .value { font-size: 2em; font-weight: bold; margin: 15px 0; }
+        .up { color: #e74c3c; } 
+        .down { color: #27ae60; }
+        .neutral { color: #34495e; }
+
+        /* 圖表區與文字 */
+        .chart-container { background: #fff; border: 1px solid #eee; padding: 30px; border-radius: 15px; margin-bottom: 15px; }
+        .analysis-text { background: #f9f9f9; padding: 25px; border-radius: 10px; border-left: 4px solid #ccc; margin-bottom: 50px; color: #444; font-size: 1.05em; }
+        
+        /* 學名斜體 */
+        i { font-style: italic; font-family: "Times New Roman", serif; }
+
+        /* 總結區 */
+        .conclusion-box { background: #eef6ff; border-radius: 15px; padding: 35px; border: 1px solid #d0e3ff; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="top-subtitle">資料科學教育應用概論期末報告＿自一甲111412007阮新恬</div>
+        <h1 class="main-title">台灣路殺動物之數據分析</h1>
+        <div class="source-info">數據來源：臺灣動物路死觀察網</div>
+    </div>
+
+    <section>
+        <h2>一、路殺數量對比（不同年份變化比例）</h2>
+        <div class="dashboard">
+            <div class="stat-card">
+                <h4>2022 到 2023 年</h4>
+                <div class="value up">↑ 上升 489%</div>
+            </div>
+            <div class="stat-card">
+                <h4>2023 到 2024 年</h4>
+                <div class="value down">↓ 下降 -62%</div>
+            </div>
+            <div class="stat-card">
+                <h4>2024 到 2025 年</h4>
+                <div class="value neutral">↑ 上升 0.7%</div>
+                <p style="font-size: 0.9em; color: #95a5a6;">幾乎沒有變化</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>二、路殺數據比較分析</h2>
+        
+        <div class="chart-container">
+            <canvas id="stackedChart"></canvas>
+        </div>
+        <div class="analysis-text">
+            根據上述圖表，我們可以發現歷年來路殺發生的月份大約落在4～8月，此時為大多數動物活躍的時候，尤其根據下方的路殺動物種類，大多都為蛙類，牠們的活躍期間也大致落在3～7月，因此有正相關的趨勢。
+        </div>
+
+        <div class="chart-container">
+            <canvas id="speciesChart"></canvas>
+        </div>
+        <div class="analysis-text">
+            我們可以發現，被路殺的第一多的動物是澤蛙（<i>Fejervarya limnocharis</i>），牠活躍的時期是一年四季，所以數量才可能是最多的。同時黑眶蟾蜍（<i>Duttaphrynus melanostictus</i>）也屬於一年四季都會出現的，因此數量也很多。
+        </div>
+
+        <div class="chart-container">
+            <canvas id="compareChart"></canvas>
+        </div>
+        <div class="analysis-text">
+            根據上圖，可以發現2023年的數量都比2024年多，代表2023年有發生事情，使路殺數量減少。
+        </div>
+    </section>
+
+    <section>
+        <h2>三、總結</h2>
+        <div class="conclusion-box">
+            以新北市為例，在2023年過後，開始新建許多生態廊道，讓那些動物可以以用生態廊道過去到對面，而不用以生命為代價去過馬路，有可能是因為這個原因，讓路殺數量有大幅的下降，下降了62%。因此，2024、2025年的路殺數量差不多，比2023年還要少。同時，農業局長也有說明，希望在2026年前設置更多的生態廊道，所以我們可以繼續追蹤這方面的數據，看看2026年的路殺數量會不會再下降。
+        </div>
+    </section>
+</div>
+
+<script>
+    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    const excelColors = ['#4472C4', '#ED7D31', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#264478'];
+
+    // --- 圖表 1: 累積長條圖 (採用小小檔案.xlsx 數據) ---
+    new Chart(document.getElementById('stackedChart'), {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                { label: '2019', data: [0,0,0,0,0,0,0,0,0,0,0,1], backgroundColor: excelColors[0] },
+                { label: '2020', data: [0,4,0,9,0,8,0,10,0,16,0,5], backgroundColor: excelColors[1] },
+                { label: '2021', data: [0,6,0,11,0,0,0,7,12,41,39,30], backgroundColor: excelColors[2] },
+                { label: '2022', data: [22,21,56,70,75,76,116,126,106,66,69,44], backgroundColor: excelColors[3] },
+                { label: '2023', data: [36,100,259,637,1203,1237,1406,803,773,1030,866,484], backgroundColor: excelColors[4] },
+                { label: '2024', data: [73,231,151,565,525,538,272,191,247,340,132,92], backgroundColor: excelColors[5] },
+                { label: '2025', data: [35,100,172,306,455,632,216,177,300,518,376,95], backgroundColor: excelColors[6] }
+            ]
+        },
+        options: {
+            plugins: { title: { display: true, text: '歷年路殺動物數月統計累積圖 (2019-2025)', font: {size: 18} } },
+            responsive: true,
+            scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: '數量（隻）' } } }
+        }
+    });
+
+    // --- 圖表 2: 物種排行榜 ---
+    new Chart(document.getElementById('speciesChart'), {
+        type: 'bar',
+        data: {
+            labels: ['澤蛙', '黑眶蟾蜍', '厚圓澤蟹', '亞洲錦蛙', '斯文豪氏攀蜥', '斑腿樹蛙', '梭德氏赤蛙'],
+            datasets: [{
+                label: '路殺數量 (隻)',
+                data: [1688, 1598, 1065, 954, 848, 507, 497],
+                backgroundColor: 'rgba(68, 114, 196, 0.7)',
+                borderColor: '#4472C4',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: { title: { display: true, text: '受影響物種數量排名', font: {size: 18} } },
+            scales: { y: { title: { display: true, text: '數量（隻）' } } }
+        }
+    });
+
+    // --- 圖表 3: 2023 vs 2024 對比圖 ---
+    new Chart(document.getElementById('compareChart'), {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: '2023年',
+                    data: [36, 100, 259, 637, 1203, 1237, 1406, 803, 773, 1030, 866, 484],
+                    backgroundColor: '#4472C4'
+                },
+                {
+                    label: '2024年',
+                    data: [73, 231, 151, 565, 525, 538, 272, 191, 247, 340, 132, 92],
+                    backgroundColor: '#ED7D31'
+                }
+            ]
+        },
+        options: {
+            plugins: { title: { display: true, text: '2023 vs 2024 年路殺動物數月統計對照圖', font: {size: 18} } },
+            responsive: true,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '數量（隻）' } } }
+        }
+    });
+</script>
+
+</body>
+</html>
